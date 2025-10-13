@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/bmoha/Desktop/Gen%20AI/GenAI%20Simplilearn%20%26%20Youtube/MLFLOW-Gen-AI-main/MLFLOW-Gen-AI-main/mlruns/850653686037021846/models/m-3fe1e7c7b4934ffa9fccd888ab81a943/artifacts
+creation_timestamp: 1760309936896
+experiment_id: '850653686037021846'
+last_updated_timestamp: 1760309939312
+model_id: m-3fe1e7c7b4934ffa9fccd888ab81a943
+model_type: null
+name: model
+source_run_id: 5ee18d894a08461a9a314f1b382a872f
+status: 2
+status_message: null

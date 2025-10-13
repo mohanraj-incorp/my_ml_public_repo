@@ -1,0 +1,25 @@
+artifact_path: file:///C:/Users/bmoha/Desktop/Gen%20AI/GenAI%20Simplilearn%20%26%20Youtube/MLFLOW-Gen-AI-main/MLFLOW-Gen-AI-main/mlruns/850653686037021846/models/m-3fe1e7c7b4934ffa9fccd888ab81a943/artifacts
+flavors:
+  openai:
+    code: null
+    data: model.yaml
+    openai_version: 1.109.1
+  python_function:
+    data: model.yaml
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.openai
+    python_version: 3.13.5
+is_signature_from_type_hint: false
+mlflow_version: 3.4.0
+model_id: m-3fe1e7c7b4934ffa9fccd888ab81a943
+model_uuid: m-3fe1e7c7b4934ffa9fccd888ab81a943
+prompts: null
+run_id: 5ee18d894a08461a9a314f1b382a872f
+signature:
+  inputs: '[{"type": "string", "required": true}]'
+  outputs: '[{"type": "string", "required": true}]'
+  params: null
+type_hint_from_example: false
+utc_time_created: '2025-10-12 22:58:56.902399'

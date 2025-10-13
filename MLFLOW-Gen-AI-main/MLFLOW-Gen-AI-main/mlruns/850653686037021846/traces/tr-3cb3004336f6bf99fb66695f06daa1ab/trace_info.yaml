@@ -1,0 +1,23 @@
+execution_duration_ms: 1593
+request_preview: '{"messages": [{"role": "system", "content": "Answer the following
+  question in two sentences"}, {"role": "user", "content": "What is Spark?"}], "model":
+  "gpt-4"}'
+request_time: '2025-10-12T22:59:02.685Z'
+response_preview: '{"id": "chatcmpl-CPzJmBX8dVweY5tecyTbmqCQg7w9E", "choices": [{"finish_reason":
+  "stop", "index": 0, "logprobs": null, "message": {"content": "Spark is an open-source,
+  distributed computing system used for big data processing and analytics. It is equipped
+  with comprehensive APIs for machine learning and graph processing as well as tools
+  for query processing and streaming data, which makes it widely used in real-time
+  processing tasks.", "refusal": null, "role": "assistant", "annotations": [], "audio":
+  null, "function_call": null, "tool_calls": null}}], "created": 1760309942, "model":
+  "gpt-4-0613", "object": "chat.completion", "service_tier": "default", "system_fingerprint":
+  null, "usage": {"completion_tokens": 51, "prompt_tokens": 22, "total_tokens": 73,
+  "completion_tokens_details": {"accepted_prediction_tokens": 0, "audio_tokens": 0,
+  "reasoning_tokens": 0, "rejected_prediction_tokens": 0}, "prompt_tokens_details":
+  {"audio_tokens": 0, "cached_tokens": 0}}}'
+state: OK
+trace_id: tr-3cb3004336f6bf99fb66695f06daa1ab
+trace_location:
+  mlflow_experiment:
+    experiment_id: '850653686037021846'
+  type: MLFLOW_EXPERIMENT
