@@ -556,3 +556,12 @@ def example():
     return True
 
 example()
+
+# COMMAND ----------
+
+#Test code to chec CI process
+def example2():
+    print("CI worked")
+    return True
+
+example2()
