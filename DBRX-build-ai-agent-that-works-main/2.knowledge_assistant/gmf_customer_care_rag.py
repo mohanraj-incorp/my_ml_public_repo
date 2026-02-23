@@ -547,3 +547,12 @@ result = agent.invoke({"messages": [HumanMessage("How many days before deliquenc
 
 #result = agent.invoke({"messages": [HumanMessage(content="test")]}, config)
 print_memory_state(result)  # your debug printer
+
+# COMMAND ----------
+
+#Test code to chec CI process
+def example():
+    print("CI worked")
+    return True
+
+example()
