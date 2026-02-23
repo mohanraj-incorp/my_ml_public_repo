@@ -22,7 +22,7 @@ jobs:
     env:
       DATABRICKS_HOST: ${{ secrets.DEPLOYMENT_TARGET_URL }}
       DATABRICKS_TOKEN:  ${{ secrets.DEPLOYMENT_TARGET_TOKEN }}
-      REPO_PATH: /Workspace/Repos/Prod_Repo
+      REPO_PATH: /Workspace/Repos/Prod_Repo/my_ml_public_repo
       # DBFS_LIB_PATH: dbfs:/path/to/libraries/
       # LATEST_WHEEL_NAME: latest_wheel_name.whl
 
