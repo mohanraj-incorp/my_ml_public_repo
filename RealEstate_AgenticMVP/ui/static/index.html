@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RealPage Leasing Assistant</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #f5f5f5; display: flex; flex-direction: column; height: 100vh; }
+
+    header { background: #1a1a2e; color: white; padding: 14px 20px; font-size: 1.1rem; font-weight: 600; }
+
+    #property-cards { display: flex; gap: 12px; padding: 12px; overflow-x: auto; background: #fff; border-bottom: 1px solid #eee; min-height: 0; }
+    #property-cards:empty { display: none; }
+    .property-card { min-width: 180px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; cursor: pointer; transition: box-shadow 0.2s; }
+    .property-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .property-card img { width: 100%; height: 100px; object-fit: cover; }
+    .property-card .info { padding: 8px; font-size: 0.8rem; }
+    .property-card .info strong { display: block; margin-bottom: 4px; }
+
+    #chat-window { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+
+    .msg { max-width: 70%; padding: 10px 14px; border-radius: 12px; line-height: 1.5; font-size: 0.9rem; }
+    .msg.user { background: #1a1a2e; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+    .msg.agent { background: white; border: 1px solid #ddd; align-self: flex-start; border-bottom-left-radius: 4px; }
+
+    #input-area { padding: 12px 16px; background: white; border-top: 1px solid #eee; display: flex; gap: 10px; }
+    #user-input { flex: 1; padding: 10px 14px; border: 1px solid #ccc; border-radius: 20px; font-size: 0.9rem; outline: none; }
+    #user-input:focus { border-color: #1a1a2e; }
+    #send-btn { background: #1a1a2e; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 0.9rem; }
+    #send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Secure SSN form — shown instead of normal input when needs_pii_collection = "ssn" */
+    #ssn-area { display: none; padding: 12px 16px; background: #fff8e1; border-top: 2px solid #f0a500; gap: 10px; align-items: center; }
+    #ssn-area.active { display: flex; }
+    #ssn-area label { font-size: 0.85rem; color: #555; }
+    #ssn-input { flex: 1; padding: 10px 14px; border: 1px solid #f0a500; border-radius: 20px; font-size: 0.9rem; letter-spacing: 2px; }
+    #ssn-submit { background: #f0a500; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; }
+
+    .stage-badge { font-size: 0.7rem; color: #888; text-align: center; margin: 4px 0; }
+  </style>
+</head>
+<body>
+  <header>🏠 RealPage Leasing Assistant</header>
+
+  <!-- Property photo cards — shown after search results arrive -->
+  <div id="property-cards"></div>
+
+  <!-- Chat messages -->
+  <div id="chat-window"></div>
+
+  <!-- Normal chat input -->
+  <div id="input-area">
+    <input id="user-input" type="text" placeholder="Type a message..." autofocus />
+    <button id="send-btn">Send</button>
+  </div>
+
+  <!-- Secure SSN input — replaces normal input when agent requests PII -->
+  <div id="ssn-area">
+    <label>🔒 Secure SSN entry (not stored in chat):</label>
+    <input id="ssn-input" type="password" placeholder="XXX-XX-XXXX" maxlength="11" />
+    <button id="ssn-submit">Submit</button>
+  </div>
+
+<script>
+  let sessionId = null;
+
+  const chatWindow   = document.getElementById("chat-window");
+  const userInput    = document.getElementById("user-input");
+  const sendBtn      = document.getElementById("send-btn");
+  const inputArea    = document.getElementById("input-area");
+  const ssnArea      = document.getElementById("ssn-area");
+  const ssnInput     = document.getElementById("ssn-input");
+  const ssnSubmit    = document.getElementById("ssn-submit");
+  const propertyCards = document.getElementById("property-cards");
+
+  function appendMessage(text, role) {
+    const div = document.createElement("div");
+    div.className = `msg ${role}`;
+    div.textContent = text;
+    chatWindow.appendChild(div);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+  }
+
+  function showStageBadge(stage) {
+    const div = document.createElement("div");
+    div.className = "stage-badge";
+    div.textContent = `— ${stage} —`;
+    chatWindow.appendChild(div);
+  }
+
+  function renderPropertyCards(properties) {
+    propertyCards.innerHTML = "";
+    if (!properties || properties.length === 0) return;
+    properties.forEach(p => {
+      const card = document.createElement("div");
+      card.className = "property-card";
+      card.innerHTML = `
+        <img src="${p.thumbnail_url || 'https://via.placeholder.com/180x100?text=No+Photo'}" alt="${p.name}" />
+        <div class="info">
+          <strong>${p.name}</strong>
+          ${p.bedrooms}BR · $${p.rent}/mo<br/>
+          ${p.city}, ${p.state}
+        </div>`;
+      card.onclick = () => sendMessage(`Tell me more about ${p.name} (${p.property_id})`);
+      propertyCards.appendChild(card);
+    });
+  }
+
+  async function sendMessage(text, ssnToken = null) {
+    const message = text || userInput.value.trim();
+    if (!message) return;
+
+    appendMessage(message, "user");
+    userInput.value = "";
+    sendBtn.disabled = true;
+
+    try {
+      const body = { message, session_id: sessionId };
+      if (ssnToken) body.ssn_token = ssnToken;
+
+      const res = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      const data = await res.json();
+      sessionId = data.session_id;
+
+      appendMessage(data.reply, "agent");
+      showStageBadge(data.pipeline_stage);
+
+      // Show property cards if search results came back
+      if (data.shortlisted_properties?.length) {
+        renderPropertyCards(data.shortlisted_properties);
+      }
+
+      // Switch to secure SSN form if agent needs PII
+      if (data.needs_pii_collection === "ssn") {
+        inputArea.style.display = "none";
+        ssnArea.classList.add("active");
+        ssnInput.focus();
+      } else {
+        inputArea.style.display = "flex";
+        ssnArea.classList.remove("active");
+      }
+
+      // Show final decision prominently
+      if (data.decision) {
+        const badge = document.createElement("div");
+        badge.style.cssText = "text-align:center;padding:12px;font-weight:600;font-size:1rem;";
+        badge.style.color = data.decision === "approve" ? "green" : data.decision === "deny" ? "red" : "orange";
+        badge.textContent = `Decision: ${data.decision.replace("_", " ").toUpperCase()}`;
+        chatWindow.appendChild(badge);
+      }
+
+    } catch (err) {
+      appendMessage("Sorry, something went wrong. Please try again.", "agent");
+    } finally {
+      sendBtn.disabled = false;
+    }
+  }
+
+  // Submit SSN via secure form — SSN goes directly to tokenization service, not through LLM
+  ssnSubmit.onclick = async () => {
+    const ssn = ssnInput.value.trim();
+    if (!ssn) return;
+
+    // In production: POST ssn to /pii/tokenize (Cloud Run service) and get back a token
+    // For POC: we simulate the token locally
+    const ssnToken = "tok_ssn_" + btoa(ssn).substring(0, 12);
+    ssnInput.value = "";
+
+    appendMessage("[SSN submitted securely]", "user");
+    await sendMessage("I have submitted my SSN via the secure form.", ssnToken);
+  };
+
+  sendBtn.onclick = () => sendMessage();
+  userInput.addEventListener("keydown", e => { if (e.key === "Enter") sendMessage(); });
+
+  // Greet on load
+  appendMessage("Hi! I'm your RealPage leasing assistant. Let's find your next home. What are you looking for?", "agent");
+</script>
+</body>
+</html>

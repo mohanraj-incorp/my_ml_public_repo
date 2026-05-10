@@ -1,0 +1,71 @@
+[
+  {
+    "case_id": "DECISION_APPROVE_001",
+    "agent": "decision",
+    "input_state": {
+      "credit_score": 740,
+      "monthly_income": 6000,
+      "employment_status": "full_time",
+      "rental_history": "clean",
+      "income_verified": true,
+      "selected_property_id": "PROP_001"
+    },
+    "expected_outcome": "approve",
+    "notes": "Strong applicant — 3.2x income ratio, clean history, high credit"
+  },
+  {
+    "case_id": "DECISION_DENY_001",
+    "agent": "decision",
+    "input_state": {
+      "credit_score": 550,
+      "monthly_income": 2800,
+      "employment_status": "part_time",
+      "rental_history": "eviction",
+      "income_verified": false,
+      "selected_property_id": "PROP_001"
+    },
+    "expected_outcome": "deny",
+    "notes": "Multiple hard failures — low score, eviction, income below threshold"
+  },
+  {
+    "case_id": "DECISION_CONDITIONAL_001",
+    "agent": "decision",
+    "input_state": {
+      "credit_score": 630,
+      "monthly_income": 4800,
+      "employment_status": "self_employed",
+      "rental_history": "late_payments",
+      "income_verified": true,
+      "selected_property_id": "PROP_001"
+    },
+    "expected_outcome": "conditional_approval",
+    "notes": "Borderline — soft flags only, no hard failures. Should require co-signer or larger deposit."
+  },
+  {
+    "case_id": "SUPERVISOR_ROUTE_001",
+    "agent": "supervisor",
+    "input_state": {
+      "pipeline_stage": "search",
+      "messages_last": "Do you allow pets in this building?"
+    },
+    "expected_next_stage": "policy",
+    "notes": "Policy question mid-flow should temporarily route to policy_faq"
+  },
+  {
+    "case_id": "INTAKE_COMPLETE_001",
+    "agent": "lead_intake",
+    "conversation": [
+      {"role": "user", "content": "Hi, I'm looking for a 2-bedroom apartment in Dallas"},
+      {"role": "assistant", "content": "Great! What's your budget?"},
+      {"role": "user", "content": "Around $2000 a month. I'd like to move in June 1st. My name is Sarah and email is sarah@example.com. No pets, no parking needed."}
+    ],
+    "expected_extracted": {
+      "bedrooms": 2,
+      "rent_max": 2000,
+      "move_in_date": "2026-06-01",
+      "prospect_name": "Sarah",
+      "prospect_email": "sarah@example.com"
+    },
+    "notes": "Tests field extraction accuracy from a dense user message"
+  }
+]

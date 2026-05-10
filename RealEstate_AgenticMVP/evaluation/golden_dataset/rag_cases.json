@@ -1,0 +1,42 @@
+[
+  {
+    "case_id": "RAG_PET_001",
+    "property_id": "PROP_001",
+    "question": "Can I have two dogs at Sunset Lofts?",
+    "expected_answer_contains": ["pet deposit", "allowed"],
+    "expected_policy_type": "pet_policy",
+    "notes": "Should cite property-specific pet policy, not a global fallback"
+  },
+  {
+    "case_id": "RAG_PET_002",
+    "property_id": "PROP_001",
+    "question": "Is there a weight limit for dogs?",
+    "expected_answer_contains": ["weight", "lbs", "pounds"],
+    "expected_policy_type": "pet_policy",
+    "notes": "Tests specific clause retrieval within a policy document"
+  },
+  {
+    "case_id": "RAG_TERM_001",
+    "property_id": "PROP_001",
+    "question": "What happens if I need to break my lease early?",
+    "expected_answer_contains": ["fee", "notice", "penalty"],
+    "expected_policy_type": "early_termination",
+    "notes": "Tests paraphrase handling — 'break my lease' → early termination clause"
+  },
+  {
+    "case_id": "RAG_FHA_001",
+    "property_id": null,
+    "question": "What questions is the leasing agent not allowed to ask me?",
+    "expected_answer_contains": ["race", "religion", "familial status"],
+    "expected_policy_type": "fair_housing",
+    "notes": "Should retrieve from global Fair Housing Act doc, not property-specific"
+  },
+  {
+    "case_id": "RAG_PARK_001",
+    "property_id": "PROP_001",
+    "question": "Is parking included in the rent?",
+    "expected_answer_contains": ["parking"],
+    "expected_policy_type": "parking",
+    "notes": "Simple factual lookup — tests precision of retrieval"
+  }
+]
