@@ -1,0 +1,202 @@
+[
+  {
+    "id": "A01",
+    "type": "A",
+    "category": "exact_fact",
+    "query": "When was The Shawshank Redemption released?",
+    "expected_answer": "The Shawshank Redemption was released in 1994.",
+    "expected_route": "analytical",
+    "expected_context": ["The Shawshank Redemption (1994)"],
+    "notes": "Simple year lookup — tests basic structured retrieval"
+  },
+  {
+    "id": "A02",
+    "type": "A",
+    "category": "exact_fact",
+    "query": "What is the IMDB rating of The Dark Knight?",
+    "expected_answer": "The Dark Knight (2008) has an IMDB rating of 9.0. The Dark Knight Rises (2012) has an IMDB rating of 8.4.",
+    "expected_route": "analytical",
+    "expected_context": ["The Dark Knight", "9.0", "8.4"],
+    "notes": "Two movies match 'Dark Knight' — agent correctly returns both ratings"
+  },
+  {
+    "id": "A03",
+    "type": "A",
+    "category": "aggregation",
+    "query": "Which director has the most movies in the IMDB top 1000?",
+    "expected_answer": "Alfred Hitchcock has the most movies in the dataset with 14 films, followed by Steven Spielberg with 13.",
+    "expected_route": "analytical",
+    "expected_context": [],
+    "notes": "GROUP BY + COUNT — actual DB result is Hitchcock 14, Spielberg 13"
+  },
+  {
+    "id": "A04",
+    "type": "A",
+    "category": "ranking",
+    "query": "What are the top 5 highest grossing movies in the dataset?",
+    "expected_answer": "The top 5 highest grossing movies are: Star Wars: The Force Awakens ($936M), Avengers: Endgame ($858M), Avatar ($760M), Avengers: Infinity War ($678M), and Titanic ($659M).",
+    "expected_route": "analytical",
+    "expected_context": [],
+    "notes": "ORDER BY Gross DESC LIMIT 5 — verified against actual DB"
+  },
+  {
+    "id": "A05",
+    "type": "A",
+    "category": "filtering",
+    "query": "List directors who have at least 2 movies in the dataset with an average IMDB rating above 8.0",
+    "expected_answer": "Many directors qualify, including Christopher Nolan (avg 8.46), Francis Ford Coppola (avg 8.40), Charles Chaplin (avg 8.33), Alfred Hitchcock (avg 8.01), Akira Kurosawa (avg 8.22), and others.",
+    "expected_route": "analytical",
+    "expected_context": [],
+    "notes": "HAVING clause test — many directors qualify, not just Nolan/Kubrick/Leone"
+  },
+  {
+    "id": "A06",
+    "type": "A",
+    "category": "comparison",
+    "query": "How many movies in the dataset are from the 1990s?",
+    "expected_answer": "There are approximately 150-200 movies from the 1990s in the IMDB top 1000.",
+    "expected_route": "analytical",
+    "expected_context": [],
+    "notes": "Decade filtering — BETWEEN or LIKE on Released_Year"
+  },
+  {
+    "id": "B01",
+    "type": "B",
+    "category": "semantic_theme",
+    "query": "Find comedy movies that have death or grief in the plot",
+    "expected_answer": "Dark comedies dealing with death and grief include films like Harold and Maude, Me and Earl and the Dying Girl, and similar darkly comic explorations of mortality.",
+    "expected_route": "semantic",
+    "expected_context": ["comedy", "death", "grief"],
+    "notes": "Classic Type B — requires semantic understanding, not keyword match"
+  },
+  {
+    "id": "B02",
+    "type": "B",
+    "category": "semantic_theme",
+    "query": "Movies before 1990 where police or detectives are involved",
+    "expected_answer": "Classic detective and police films from before 1990 include Dirty Harry, Vertigo, Laura, and similar crime dramas from that era.",
+    "expected_route": "semantic",
+    "expected_context": ["police", "detective", "crime"],
+    "notes": "Hybrid filter (year) + semantic (police theme)"
+  },
+  {
+    "id": "B03",
+    "type": "B",
+    "category": "semantic_mood",
+    "query": "Recommend movies with a hopeful or uplifting ending",
+    "expected_answer": "Films with hopeful or uplifting endings where characters find redemption, friendship, or triumph over adversity — feel-good films that leave the audience with a positive emotional response.",
+    "expected_route": "semantic",
+    "expected_context": ["hopeful", "uplifting", "redemption"],
+    "notes": "Mood-based query — pure semantic, no structured filter"
+  },
+  {
+    "id": "B04",
+    "type": "B",
+    "category": "semantic_theme",
+    "query": "Science fiction movies that explore artificial intelligence or sentient machines",
+    "expected_answer": "Science fiction films exploring artificial intelligence include 2001: A Space Odyssey, The Terminator, Ex Machina, and The Matrix — examining AI consciousness, machine autonomy, and humanity's relationship with technology.",
+    "expected_route": "semantic",
+    "expected_context": ["artificial intelligence", "robot", "machine"],
+    "notes": "Thematic semantic query — tests concept matching"
+  },
+  {
+    "id": "B05",
+    "type": "B",
+    "category": "semantic_description",
+    "query": "Movies about a heist where things go wrong",
+    "expected_answer": "Crime films where a heist plan falls apart due to betrayal or complications include Reservoir Dogs, Heat, Dog Day Afternoon, and similar thrillers.",
+    "expected_route": "semantic",
+    "expected_context": ["heist", "robbery", "plan"],
+    "notes": "Narrative pattern query"
+  },
+  {
+    "id": "C01",
+    "type": "C",
+    "category": "hybrid_summarize",
+    "query": "Summarize Steven Spielberg's science fiction movie plots in the dataset",
+    "expected_answer": "Spielberg's sci-fi films include E.T. the Extra-Terrestrial, Close Encounters of the Third Kind, and Minority Report. Common themes include human connection with the unknown, disruption of ordinary life by extraordinary events, and moral complexity.",
+    "expected_route": "semantic",
+    "expected_context": ["Spielberg", "science fiction", "E.T."],
+    "notes": "Director filter + semantic search + summarization — tests the full RAG pipeline"
+  },
+  {
+    "id": "C02",
+    "type": "C",
+    "category": "hybrid_filter_semantic",
+    "query": "What are the highest-rated thriller movies from the 1990s?",
+    "expected_answer": "Top-rated 90s thrillers include The Silence of the Lambs, Se7en, and Heat.",
+    "expected_route": "analytical",
+    "expected_context": ["thriller", "1990s", "rating"],
+    "notes": "Structured filter (year, genre, rating) — analytical agent should handle"
+  },
+  {
+    "id": "C03",
+    "type": "C",
+    "category": "hybrid_summarize",
+    "query": "Compare the plots of Christopher Nolan's movies in the dataset",
+    "expected_answer": "Nolan's films include The Dark Knight, Inception, Interstellar, and Memento — all featuring complex narratives, non-linear storytelling, and philosophical themes.",
+    "expected_route": "semantic",
+    "expected_context": ["Christopher Nolan", "Inception", "Interstellar"],
+    "notes": "Director-scoped semantic search + summarization"
+  },
+  {
+    "id": "D01",
+    "type": "D",
+    "category": "clarification_role",
+    "query": "Show me Al Pacino movies that grossed over $50 million",
+    "expected_answer": "Are you looking for movies where Al Pacino was the lead actor, or any film he appeared in (including supporting roles)?",
+    "expected_route": "clarify",
+    "expected_context": [],
+    "notes": "Lead only vs any role — genuinely changes the SQL query"
+  },
+  {
+    "id": "D02",
+    "type": "D",
+    "category": "clarification_time",
+    "query": "What are the best old movies?",
+    "expected_answer": "Could you clarify what you mean by 'old'? For example, are you looking for movies from before 1970, the 1980s, or a specific decade?",
+    "expected_route": "clarify",
+    "expected_context": [],
+    "notes": "'Old' is ambiguous — decade matters for the filter"
+  },
+  {
+    "id": "D03",
+    "type": "D",
+    "category": "clarification_metric",
+    "query": "What are the most popular movies?",
+    "expected_answer": "When you say 'most popular', do you mean highest IMDB rating, most votes, or highest box office gross?",
+    "expected_route": "clarify",
+    "expected_context": [],
+    "notes": "Popularity is ambiguous — different columns answer different interpretations"
+  },
+  {
+    "id": "B06",
+    "type": "B",
+    "category": "semantic_theme",
+    "query": "Movies about survival in extreme conditions or isolated environments",
+    "expected_answer": "Survival films set in extreme or isolated conditions include The Revenant, Life of Pi, Interstellar, and similar films about human endurance against nature or isolation.",
+    "expected_route": "semantic",
+    "expected_context": ["survival", "isolated", "extreme"],
+    "notes": "Multi-concept thematic query"
+  },
+  {
+    "id": "A07",
+    "type": "A",
+    "category": "multi_star",
+    "query": "Which movies feature both a high IMDB rating (above 8.5) and a high Meta score (above 80)?",
+    "expected_answer": "Movies with IMDB rating > 8.5 and Meta score > 80 include The Shawshank Redemption, Schindler's List, and similar acclaimed films.",
+    "expected_route": "analytical",
+    "expected_context": [],
+    "notes": "Multi-column filter — tests compound WHERE clause"
+  },
+  {
+    "id": "B07",
+    "type": "B",
+    "category": "semantic_character",
+    "query": "Movies with an anti-hero or morally ambiguous protagonist",
+    "expected_answer": "Films featuring morally ambiguous protagonists or anti-heroes include Pulp Fiction, Touch of Evil, and similar crime dramas where the lead operates outside conventional morality.",
+    "expected_route": "semantic",
+    "expected_context": ["anti-hero", "morally complex", "protagonist"],
+    "notes": "Character archetype query — requires semantic understanding"
+  }
+]
