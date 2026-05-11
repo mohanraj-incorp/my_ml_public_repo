@@ -284,12 +284,22 @@ async def run_semantic_node(state: AgentState) -> dict:
 
 def ask_clarification_node(state: AgentState) -> dict:
     """
-    Node 3: Increment the clarification counter.
+    Node 3: Increment the clarification counter and surface the clarification question.
     The actual clarification question was already added to messages in classify_query_node.
+    Copy it into agent_response so process_query can return it to the UI.
     The graph ends after this node — LangGraph pauses and waits for the next user message.
     On next ainvoke(), the graph resumes from classify_query with the clarification context.
     """
-    return {"clarification_count": state.get("clarification_count", 0) + 1}
+    clarification_text = ""
+    for msg in reversed(state.get("messages", [])):
+        if isinstance(msg, AIMessage) and msg.content:
+            clarification_text = msg.content
+            break
+
+    return {
+        "clarification_count": state.get("clarification_count", 0) + 1,
+        "agent_response": clarification_text,
+    }
 
 
 def recommendations_node(state: AgentState) -> dict:
