@@ -1,0 +1,35 @@
+# ── Core LLM / Orchestration ──────────────────────────────────────────────────
+langchain>=0.3.0
+langchain-openai>=0.2.0
+langchain-core>=0.3.0
+langgraph>=0.2.0
+openai>=1.40.0
+
+# ── RAG ───────────────────────────────────────────────────────────────────────
+faiss-cpu>=1.7.4
+sentence-transformers>=3.0.0    # bi-encoder embeddings + cross-encoder reranker
+rank-bm25>=0.2.2                # BM25 sparse retrieval
+
+# ── Data ──────────────────────────────────────────────────────────────────────
+pandas>=2.0.0
+numpy>=1.26.0
+aiosqlite>=0.20.0               # async SQLite for long-term memory
+
+# ── Configuration ─────────────────────────────────────────────────────────────
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+
+# ── Retries ───────────────────────────────────────────────────────────────────
+tenacity>=8.2.0
+
+# ── Evaluation ────────────────────────────────────────────────────────────────
+ragas>=0.1.0
+datasets>=2.14.0                # HuggingFace datasets (required by RAGAS)
+
+# ── UI ────────────────────────────────────────────────────────────────────────
+streamlit>=1.36.0
+
+# ── Dev / Testing ─────────────────────────────────────────────────────────────
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+python-dotenv>=1.0.0

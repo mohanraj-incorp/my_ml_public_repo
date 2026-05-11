@@ -1,0 +1,30 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+
+# Generated data (rebuild with scripts/build_indexes.py)
+data/imdb.db
+data/faiss_index/
+data/bm25_index.pkl
+
+# Per-run evaluation results (baseline_metrics.json IS committed)
+evaluation/results/
+
+# Per-session trace logs
+logs/
+
+# Claude Code session data
+.claude/
+
+# Evaluation run output text
+evaluation/eval_run_output.txt
+
+# Python env
+.venv/
+venv/
+*.egg-info/
+dist/
+build/

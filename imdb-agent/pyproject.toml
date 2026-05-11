@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "imdb-agent"
+version = "0.1.0"
+description = "Conversational voice agent over the IMDB top-1000 dataset"
+requires-python = ">=3.11"
+readme = "README.md"
+dependencies = [
+    "faiss-cpu>=1.13.2",
+    "numpy>=2.4.4",
+    "pandas>=3.0.2",
+    "rank-bm25>=0.2.2",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["tests*", "evaluation/results*", "logs*", "data*"]
+
+# ── pytest ─────────────────────────────────────────────────────────────────────
+[tool.pytest.ini_options]
+# "auto" means every async test function is treated as asyncio without
+# needing the @pytest.mark.asyncio decorator — removes the warning we saw.
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+
+# ── pyright (IDE type checking) ────────────────────────────────────────────────
+[tool.pyright]
+pythonVersion = "3.11"
+include = ["."]
+extraPaths = ["."]
+# Suppress missing-import warnings for packages not installed in the IDE venv
+reportMissingImports = "warning"
+reportMissingModuleSource = "none"
+
+# ── ruff (optional linter — remove if not using) ───────────────────────────────
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+select = ["E", "F", "W", "I"]   # pycodestyle + pyflakes + isort
+ignore = ["E501"]                # line length handled by formatter
